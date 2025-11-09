@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/d3-practice/static/css/main.678f932c.css",
-    "main.js": "/d3-practice/static/js/main.bb02bfd0.js",
-    "static/js/453.d7446e4a.chunk.js": "/d3-practice/static/js/453.d7446e4a.chunk.js",
-    "index.html": "/d3-practice/index.html",
-    "main.678f932c.css.map": "/d3-practice/static/css/main.678f932c.css.map",
-    "main.bb02bfd0.js.map": "/d3-practice/static/js/main.bb02bfd0.js.map",
-    "453.d7446e4a.chunk.js.map": "/d3-practice/static/js/453.d7446e4a.chunk.js.map"
+    "main.css": "./static/css/main.678f932c.css",
+    "main.js": "./static/js/main.8830916d.js",
+    "static/js/453.d7446e4a.chunk.js": "./static/js/453.d7446e4a.chunk.js",
+    "index.html": "./index.html",
+    "main.678f932c.css.map": "./static/css/main.678f932c.css.map",
+    "main.8830916d.js.map": "./static/js/main.8830916d.js.map",
+    "453.d7446e4a.chunk.js.map": "./static/js/453.d7446e4a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.678f932c.css",
-    "static/js/main.bb02bfd0.js"
+    "static/js/main.8830916d.js"
   ]
 }
