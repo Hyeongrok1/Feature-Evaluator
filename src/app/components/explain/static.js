@@ -13,31 +13,88 @@ export async function get_data() {
 }
 
 
-export async function get_average_cosine_similarity() {
+export async function get_scatter_data(X, Y) {
     const data = await get_data();
     const features = data.features;
     const newFeatures = [];
-    console.log(features);
-    for (const feature of features) {
-        let allSimilarities = [];
 
+    for (const feature of features) {
+        let xAxis;
+        let yAxis;
+        let xVal;
+        let yVal;
         if (feature.explanations === null || feature.explanations === undefined) continue; 
         
         for (const explanation of feature.explanations) {
-            for (const similarityPair of explanation.pairwise_semantic_similarity) {
-                allSimilarities.push(similarityPair.cosine_similarity);
+
+            if (X.label === "Embedding") {
+                xAxis = "Embedding";
+                const val = explanation["scores"]["embedding"];
+                if (X.range[0] < val && val < X.range[1]) {
+                    console.log(X.range[0]);
+                    xVal = val; 
+                } else {
+                    continue;
+                }
             }
-        }
-        if (allSimilarities.length > 0) {
-            const sum = allSimilarities.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            const average = sum / allSimilarities.length;
+            if (Y.label === "Embedding") {
+                yAxis = "Embedding";
+                const val = explanation["scores"]["embedding"];
+                if (Y.range[0] < val && val < Y.range[1]) {
+                    yVal = val; 
+                } else {
+                    continue;
+                }
+            }
+
+            if (X.label === "Fuzz") {
+                xAxis = "Fuzz";
+                const val = explanation["scores"]["fuzz"];
+                if (X.range[0] < val && val < X.range[1]) {
+                    xVal = val; 
+                } else {
+                    continue;
+                }
+            }
+            if (Y.label === "Fuzz") {
+                yAxis = "Fuzz";
+                const val = explanation["scores"]["fuzz"];
+                if (Y.range[0] < val && val < Y.range[1]) {
+                    yVal = val; 
+                } else {
+                    continue;
+                }
+            }
+
+            if (X.label === "Detection") {
+                xAxis = "Detection";
+                const val = explanation["scores"]["detection"];
+                if (X.range[0] < val && val < X.range[1]) {
+                    xVal = val; 
+                } else {
+                    continue;
+                }
+            }
+            if (Y.label === "Detection") {
+                yAxis = "Detection";
+                const val = explanation["scores"]["fuzz"];
+                if (Y.range[0] < val && val < Y.range[1]) {
+                    yVal = val; 
+                } else {
+                    continue;
+                }
+            }
             newFeatures.push({
                 feature_id: feature.feature_id,
-                cosine_average: average
-            });
+                model: explanation["llm_explainer"],
+                xy: {
+                    x: xVal,
+                    y: yVal
+                }
+            })
         }
     }
-
+    console.log(newFeatures);
     return {
         sae_id: data.sae_id,
         features: newFeatures
