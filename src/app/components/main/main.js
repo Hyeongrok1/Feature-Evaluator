@@ -10,6 +10,7 @@ export default function Main() {
     const [selectedTag, setSelectedTag] = useState(null);
     const [X, setX] = useState({ label: "Embedding", range: [0, 1] });
     const [Y, setY] = useState({ label: "Fuzz", range: [0, 1] });
+    const [Z, setZ] = useState({ label: "Detection", range: [0, 1] });
 
     return (
         <div className="container-fluid p-0 bg-light min-vh-100 d-flex flex-column">
@@ -23,7 +24,7 @@ export default function Main() {
 
                 {/* View B */}
                 <div className="flex-grow-1 d-flex col-md-6 flex-column overflow-hidden">    
-                    <ViewB X={X} Y={Y} selectedFeatureId={selectedFeatureId} setSelectedFeatureId={setSelectedFeatureId} />
+                    <ViewB X={X} Y={Y} Z={Z} setX={setX} setY={setY} setZ={setZ} selectedFeatureId={selectedFeatureId} setSelectedFeatureId={setSelectedFeatureId} />
                 </div>
 
                 {/* View C */}
@@ -33,20 +34,7 @@ export default function Main() {
             </div>
 
             <div className="flex-grow-1 d-flex overflow-hidden">
-
-                <ViewD selectedFeatureId={selectedFeatureId} X={ X } Y={ Y } setX={ setX } setY={ setY } />
-
-                <div className="p-3" style={{ width: '700px' }}>
-                    <div className="h-100  p-3">
-                        <h6 className="fw-bold text-secondary border-bottom pb-2">View E: Tags & Metadata</h6>
-                        <div className="d-flex flex-column gap-2 mt-3">
-                            <span className="badge bg-primary p-2 fs-6 text-start">Feature A</span>
-                            <span className="badge bg-success p-2 fs-6 text-start">Status: OK</span>
-                            <span className="badge bg-info text-dark p-2 fs-6 text-start">Category 1</span>
-                        </div>
-                    </div>
-                </div>
-
+                <ViewD selectedFeatureId={selectedFeatureId} X={ X } Y={ Y } Z={ Z } setX={ setX } setY={ setY } setZ={ setZ } />
             </div>
         </div>
     );

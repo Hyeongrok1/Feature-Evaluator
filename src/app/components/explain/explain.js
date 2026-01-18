@@ -4,11 +4,12 @@ import { get_explains } from './static.js';
 
 export default function ExplainView({ selectedFeatureId }) {
     const chartRef = useRef(null);
+    const fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
 
     useEffect(() => {
         const margin = { top: 20, right: 20, bottom: 20, left: 20 },
             width = 580 - margin.left - margin.right,
-            height = 185 - margin.top - margin.bottom;
+            height = 175 - margin.top - margin.bottom;
 
         const ids = ["first", "second", "third"];
         const titles = ["hugging-quants", "Qwen", "openai"];
@@ -19,7 +20,10 @@ export default function ExplainView({ selectedFeatureId }) {
             ids.forEach((id, i) => {
                 const wrapper = svgContainer.append("div").attr("class", "mb-4 w-100");
                 
-                wrapper.append("h6").attr("class", "fw-bold text-primary mb-2").text(titles[i]);
+                wrapper.append("h6")
+                    .attr("class", "fw-bold text-primary mb-2")
+                    .style("font-family", fontFamily)
+                    .text(titles[i]);
 
                 const svg = wrapper.append("svg")
                     .attr("id", id)
@@ -46,17 +50,17 @@ export default function ExplainView({ selectedFeatureId }) {
             ids.forEach((id, index) => {
                 const container = d3.select(`#${id}`).select(".text-container");
 
-                // remove prev text
                 container.selectAll("*").remove(); 
 
                 container.append("foreignObject")
                     .attr("width", 550)
                     .attr("height", 200)
                     .append("xhtml:div")
-                    .style("font-size", "18px")
+                    .style("font-family", fontFamily)
+                    .style("font-size", "16px") 
                     .style("line-height", "1.6")
                     .style("color", "#333")
-                    .html(data[index].Text || "Explaination doesn't exist");
+                    .html(data[index].Text || "Explanation doesn't exist");
             });
         });
     }, [selectedFeatureId]);
@@ -64,7 +68,9 @@ export default function ExplainView({ selectedFeatureId }) {
     return (
         <div className="d-flex flex-column align-items-start w-100 p-2">
             <div className="d-flex justify-content-between align-items-center mb-3" style={{ width: '625px' }}>
-                <h5 className="m-0 fw-bold text-secondary">Selected Explanation Analysis</h5>
+                <h5 className="m-0 fw-bold text-secondary" style={{ fontFamily: fontFamily }}>
+                    Selected Explanation Analysis
+                </h5>
             </div>
             <div 
                 ref={chartRef} 

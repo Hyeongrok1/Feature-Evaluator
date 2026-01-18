@@ -8,7 +8,7 @@ export default function ViewA() {
     return (
         <>
             {/* Raincloud plot */}
-            <div style={{ marginTop: '65px', minHeight: '750px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}>
+            <div style={{ marginTop: '65px', minHeight: '700px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}>
                 <FuzzCloud />
                 <DetectionCloud />
                 <EmbeddingCloud />
