@@ -52,8 +52,8 @@ export default class Scatterplot {
             .attr("fill", "black")
             .style("font-size", "16px")
 
-        this.xScale.domain(d3.extent(this.data, d => d.xy["x"])).range([0, this.width]);
-        this.yScale.domain(d3.extent(this.data, d => d.xy["y"])).range([this.height, 0]);
+        this.xScale.domain([0, 1]).range([0, this.width]);
+        this.yScale.domain([0, 1]).range([this.height, 0]);
         this.circles = this.container.selectAll("circle")
             .data(this.data)
             .join(

@@ -18,12 +18,12 @@ export default function Main() {
                 {/* View A */}
                 <div className="p-2" style={{ height: '400px' }}>
                     <Header />
-                    <ViewA featureId={selectedFeatureId} onSelect={setSelectedFeatureId} />
+                    <ViewA />
                 </div>
 
                 {/* View B */}
                 <div className="flex-grow-1 d-flex col-md-6 flex-column overflow-hidden">    
-                    <ViewB selectedFeatureId={selectedFeatureId} setSelectedFeatureId={setSelectedFeatureId} />
+                    <ViewB X={X} Y={Y} selectedFeatureId={selectedFeatureId} setSelectedFeatureId={setSelectedFeatureId} />
                 </div>
 
                 {/* View C */}
