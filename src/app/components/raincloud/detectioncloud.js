@@ -19,7 +19,7 @@ export default function EmbeddingCloud() {
 
         const margin = {top: 35, right: 200, bottom: 40, left: 45},
             width = 500 - margin.left - margin.right,
-            height = 200 - margin.top - margin.bottom;
+            height = 190 - margin.top - margin.bottom;
 
         const svg = d3.select(chartRef.current)
             .append("svg")

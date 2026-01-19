@@ -32,8 +32,8 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         const models = ['first', 'second', 'third'];
         const modelNames = ['hugging-quants', 'Qwen', 'openai']; // 요청하신 이름들
         
-        const margin = { top: 70, right: 20, bottom: 60, left: 20 };
-        const height = 630 - margin.top - margin.bottom;
+        const margin = { top: 70, right: 20, bottom: 40, left: 20 };
+        const height = 695 - margin.top - margin.bottom;
         const chartSpacing = 400;
         const innerChartWidth = 350;
         const totalWidth = (chartSpacing * 2) + innerChartWidth + margin.left + margin.right;

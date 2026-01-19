@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }) {
-    // 초기 태그 리스트
     const [tags, setTags] = useState([
         { id: 1, name: 'High Embedding', color: 'btn-primary', rangeX: [0.7, 1.0], rangeY: [0, 1], rangeZ: [0, 1] },
         { id: 2, name: 'Low Fuzz', color: 'btn-success', rangeX: [0, 1], rangeY: [0, 0.3], rangeZ: [0, 1] },
@@ -11,14 +10,12 @@ export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }
     const [newTagName, setNewTagName] = useState('');
     const [newTagColor, setNewTagColor] = useState('btn-info');
 
-    // 태그 삭제 함수
     const handleDeleteTag = (e, id) => {
-        e.stopPropagation(); // 부모 버튼의 클릭 이벤트(필터 적용)가 발생하지 않도록 차단
+        e.stopPropagation(); 
         setTags(tags.filter(tag => tag.id !== id));
     };
 
     const handleAddTag = () => {
-        // [에러 해결] X, Y, Z 객체가 존재하는지 확인
         if (!X || !Y || !Z) {
             alert("부모 컴포넌트에서 필터 데이터(X, Y, Z)가 전달되지 않았습니다.");
             return;
@@ -48,7 +45,7 @@ export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }
     };
 
     return (
-        <div className="p-3" style={{ width: '600px' }}>
+        <div className="p-3" style={{ width: '626px' }}>
             <div className="h-100 p-3 shadow-sm border" style={{ borderRadius: '12px', background: '#fff' }}>
                 <h6 className="fw-bold text-secondary border-bottom pb-2">Tags & Metadata</h6>
                 
@@ -65,7 +62,6 @@ export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }
                                         (X: {tag.rangeX[0].toFixed(1)}-{tag.rangeX[1].toFixed(1)})
                                     </small>
                                 </span>
-                                {/* 삭제 버튼 (X) */}
                                 <span 
                                     className="badge bg-white text-dark ms-2" 
                                     style={{ cursor: 'pointer', opacity: 0.8 }}
@@ -86,7 +82,6 @@ export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }
                                 value={newTagName}
                                 onChange={(e) => setNewTagName(e.target.value)}
                             />
-                            {/* 컬러 피커 (동그라미) */}
                             <div className="d-flex gap-2 mb-3">
                                 {['btn-primary', 'btn-success', 'btn-info', 'btn-warning', 'btn-danger', 'btn-dark'].map(c => (
                                     <div 

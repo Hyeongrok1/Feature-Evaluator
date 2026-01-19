@@ -9,7 +9,7 @@ export default function ExplainView({ selectedFeatureId }) {
     useEffect(() => {
         const margin = { top: 20, right: 20, bottom: 20, left: 20 },
             width = 580 - margin.left - margin.right,
-            height = 175 - margin.top - margin.bottom;
+            height = 195 - margin.top - margin.bottom;
 
         const ids = ["first", "second", "third"];
         const titles = ["hugging-quants", "Qwen", "openai"];

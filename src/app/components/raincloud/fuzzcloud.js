@@ -19,7 +19,7 @@ export default function FuzzCloud() {
 
         const margin = {top: 35, right: 200, bottom: 40, left: 45},
             width = 500 - margin.left - margin.right,
-            height = 220 - margin.top - margin.bottom; // 간격 증가를 고려해 높이 약간 수정
+            height = 190 - margin.top - margin.bottom; // 간격 증가를 고려해 높이 약간 수정
 
         const svg = d3.select(chartRef.current)
             .append("svg")

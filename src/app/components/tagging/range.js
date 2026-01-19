@@ -43,9 +43,7 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
         updateZ(null, updatedRange);
     };
 
-    // 3. APPLY 버튼 클릭 핸들러 (현재 상태를 다시 한번 확정)
     const handleApply = () => {
-        // 이미 실시간으로 반영되고 있으므로, 여기서는 시각적 피드백이나 추가 로직만 수행
         console.log("Applied Filters:", { X, Y, Z });
         alert(`Filters applied: X(${X.label}), Y(${Y.label}), Z(${Z.label})`);
     };
@@ -58,7 +56,6 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
                 </h6>
                 
                 <div className="d-flex flex-column gap-5">
-                    {/* --- Section X --- */}
                     <div className="section-container">
                         <div className="dropdown mb-4">
                             <button className="btn btn-outline-dark dropdown-toggle px-4 fw-bold" style={{ width: '200px' }}>
@@ -76,7 +73,7 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
                                 <RangeSlider 
                                     className="range-slider" 
                                     value={X.range} 
-                                    onInput={(val) => updateX(null, val)} // 실시간 업데이트
+                                    onInput={(val) => updateX(null, val)} 
                                     min={0} max={1} step="any" 
                                 />
                             </div>
@@ -88,7 +85,6 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
                         </div>
                     </div>
 
-                    {/* --- Section Y --- */}
                     <div className="section-container">
                         <div className="dropdown mb-4">
                             <button className="btn btn-outline-dark dropdown-toggle px-4 fw-bold" style={{ width: '200px' }}>
@@ -106,7 +102,7 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
                                 <RangeSlider 
                                     className="range-slider" 
                                     value={Y.range} 
-                                    onInput={(val) => updateY(null, val)} // 실시간 업데이트
+                                    onInput={(val) => updateY(null, val)} 
                                     min={0} max={1} step="any" 
                                 />
                             </div>
@@ -136,7 +132,7 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
                                 <RangeSlider 
                                     className="range-slider" 
                                     value={Z.range} 
-                                    onInput={(val) => updateZ(null, val)} // 실시간 업데이트
+                                    onInput={(val) => updateZ(null, val)} 
                                     min={0} max={1} step="any" 
                                 />
                             </div>
