@@ -167,7 +167,7 @@ export default function EmbeddingCloud() {
                 style={{ 
                     background: '#fff', 
                     borderRadius: '8px', 
-                    padding: '20px', // 패딩 증가
+                    padding: '20px',
                     boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
                     overflow: 'visible'
                 }}

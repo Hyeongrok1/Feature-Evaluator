@@ -5,7 +5,6 @@ import 'react-range-slider-input/dist/style.css';
 
 export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
 
-    // 1. 슬라이더나 입력창 변경 시 부모 상태를 즉시 업데이트하는 공통 함수
     const updateX = (newLabel, newRange) => {
         setX({ label: newLabel || X.label, range: newRange || X.range });
     };
@@ -18,7 +17,6 @@ export default function Ranging({ X, Y, Z, setX, setY, setZ}) {
         setZ({ label: newLabel || Z.label, range: newRange || Z.range });
     };
 
-    // 2. 숫자 입력창 직접 수정 핸들러
     const handleInputXChange = (index, val) => {
         const newValue = parseFloat(val);
         if (isNaN(newValue)) return;

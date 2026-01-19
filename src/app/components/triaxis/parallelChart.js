@@ -28,9 +28,8 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
     useEffect(() => {
         if (!chartRef.current || scoreData.length === 0) return;
 
-        // 모델 내부 데이터 키와 매칭되는 표시용 이름 배열
         const models = ['first', 'second', 'third'];
-        const modelNames = ['hugging-quants', 'Qwen', 'openai']; // 요청하신 이름들
+        const modelNames = ['hugging-quants', 'Qwen', 'openai']; 
         
         const margin = { top: 70, right: 20, bottom: 40, left: 20 };
         const height = 695 - margin.top - margin.bottom;
@@ -106,16 +105,14 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
             updateStyles();
         };
 
-        // 모델별 그룹 생성
         mainG.selectAll(".model-group").data(models).join("g")
             .attr("class", "model-group")
             .attr("transform", (d, i) => `translate(${i * chartSpacing}, 0)`)
-            .each(function(model, i) { // i를 인자로 추가
+            .each(function(model, i) { 
                 const g = d3.select(this);
                 const dimensions = [`${model}_embedding`, `${model}_fuzz`, `${model}_detection` ];
                 const xScale = d3.scalePoint().range([0, innerChartWidth]).domain(dimensions).padding(0.1);
 
-                // --- 모델 타이틀 삽입 (hugging-quants, Qwen, openai) ---
                 g.selectAll(".model-title").data([modelNames[i]]).join("text")
                     .attr("class", "model-title")
                     .attr("x", innerChartWidth / 2)

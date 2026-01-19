@@ -27,7 +27,6 @@ export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }
             id: Date.now(),
             name: newTagName,
             color: newTagColor,
-            // 안전하게 range 값을 복사
             rangeX: X.range ? [...X.range] : [0, 1],
             rangeY: Y.range ? [...Y.range] : [0, 1],
             rangeZ: Z.range ? [...Z.range] : [0, 1]

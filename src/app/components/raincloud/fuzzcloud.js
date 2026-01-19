@@ -19,7 +19,7 @@ export default function FuzzCloud() {
 
         const margin = {top: 35, right: 200, bottom: 40, left: 45},
             width = 500 - margin.left - margin.right,
-            height = 190 - margin.top - margin.bottom; // 간격 증가를 고려해 높이 약간 수정
+            height = 190 - margin.top - margin.bottom; 
 
         const svg = d3.select(chartRef.current)
             .append("svg")
@@ -93,7 +93,6 @@ export default function FuzzCloud() {
                         .y0(height) 
                         .y1(d => y(d[1])) 
                     )
-                    // Cloud 자체 마우스 오버
                     .on("mouseover", () => highlightModel(cat.key))
                     .on("mouseleave", resetHighlight);
 

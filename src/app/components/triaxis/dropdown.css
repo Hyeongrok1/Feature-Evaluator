@@ -1,15 +1,12 @@
-/* 드롭다운 컨테이너 */
 .dropdown {
   position: relative;
   display: inline-block;
 }
 
-/* 드롭다운 버튼 (텍스트 스타일 포함) */
 .dropdown-toggle {
   cursor: pointer;
 }
 
-/* 드롭다운 내용 (기본적으로 숨김) */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -22,12 +19,10 @@
   margin-top: 5px;
 }
 
-/* 마우스를 올렸을 때 메뉴 표시 */
 .dropdown:hover .dropdown-content {
   display: block;
 }
 
-/* 드롭다운 내부 링크/아이템 */
 .dropdown-content a {
   color: #333;
   padding: 10px 16px;
@@ -37,18 +32,15 @@
   transition: background-color 0.2s;
 }
 
-/* 아이템 호버 시 배경색 변경 */
 .dropdown-content a:hover {
   background-color: #f1f3f5;
-  color: #dc3545; /* 강조색 (Bootstrap danger 색상 계열) */
+  color: #dc3545;
 }
 
-/* 현재 선택된 아이템 강조 (bg-light fw-bold 클래스 대응) */
 .dropdown-content a.bg-light {
   background-color: #e9ecef;
 }
 
-/* 스크롤바 디자인 (Webkit 브라우저) */
 .dropdown-content::-webkit-scrollbar {
   width: 6px;
 }

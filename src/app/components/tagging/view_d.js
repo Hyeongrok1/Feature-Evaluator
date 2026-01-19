@@ -12,7 +12,6 @@ export default function ViewD({ setSelectedFeatureId, X, Y, Z, setX, setY, setZ 
             <Taglist />
             {/* <Tagging X={ X } Y={ Y } /> */}
             <Ranging X={ X } Y={ Y } Z={ Z } setX={ setX } setY={ setY } setZ={ setZ } />
-            {/* <Taglist /> */}
 
         </>
     );
