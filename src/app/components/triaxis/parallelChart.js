@@ -181,7 +181,7 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
             <div className="card shadow-sm p-4" style={{ borderRadius: '15px', overflowX: 'auto' }}>
                 <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                     <div className="d-flex align-items-center gap-4">
-                        <h5 className="fw-bold m-0 text-dark">Multi-Model Analysis</h5>
+                        <h5 className="fw-bold m-0 text-dark">Explanation Score Analysis</h5>
                         <div className="dropdown" style={{ position: 'relative' }}>
                             <button className="btn btn-outline-dark btn-sm dropdown-toggle fw-bold" type="button" style={{ minWidth: '160px' }}>
                                 {selectedFeatureId ? `ID: ${selectedFeatureId}` : "Filtered Features"}
