@@ -4,15 +4,18 @@ import EmbeddingCloud from './embeddingcloud.js';
 import DetectionCloud from './detectioncloud.js';
 
 export default function ViewA() {
-
     return (
-        <>
-            {/* Raincloud plot */}
-            <div style={{ marginTop: '65px', minHeight: '600px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}>
-                <FuzzCloud />
-                <DetectionCloud />
-                <EmbeddingCloud />
+        <div className="card shadow-sm h-100" style={{ 
+            background: '#fff', 
+            borderRadius: '12px', 
+            overflow: 'hidden', 
+            border: 'none'
+        }}>
+            <div className="card-body p-2 d-flex flex-column justify-content-between h-100">
+                <div style={{ flex: 1, minHeight: 0 }}><FuzzCloud /></div>
+                <div style={{ flex: 1, minHeight: 0 }}><DetectionCloud /></div>
+                <div style={{ flex: 1, minHeight: 0 }}><EmbeddingCloud /></div>
             </div>
-        </>
+        </div>
     );
 }

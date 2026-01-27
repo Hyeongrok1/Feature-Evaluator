@@ -8,6 +8,7 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
     const [scoreData, setScoreData] = useState([]);
     const filtersRef = useRef(new Map());
     const isInternalUpdate = useRef(false);
+    const fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
 
     useEffect(() => {
         get_scores().then(data => { if (data && data.length > 0) setScoreData(data); });
@@ -32,15 +33,20 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         const modelNames = ['hugging-quants', 'Qwen', 'openai']; 
         
         const margin = { top: 70, right: 20, bottom: 40, left: 20 };
-        const height = 695 - margin.top - margin.bottom;
+        const baseHeight = 600; 
+        const height = baseHeight - margin.top - margin.bottom;
         const chartSpacing = 400;
-        const innerChartWidth = 350;
+        const innerChartWidth = 330;
         const totalWidth = (chartSpacing * 2) + innerChartWidth + margin.left + margin.right;
+        const totalHeight = baseHeight;
 
         const svg = d3.select(chartRef.current)
             .selectAll("svg").data([null]).join("svg")
-            .attr("width", totalWidth)
-            .attr("height", height + margin.top + margin.bottom);
+            .attr("viewBox", `0 0 ${totalWidth} ${totalHeight}`) 
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .style("width", "100%")  
+            .style("height", "100%") 
+            .style("display", "block");
 
         if (svg.select(".main-g").empty()) {
             svg.append("g").attr("class", "main-g").attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -116,10 +122,11 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
                 g.selectAll(".model-title").data([modelNames[i]]).join("text")
                     .attr("class", "model-title")
                     .attr("x", innerChartWidth / 2)
-                    .attr("y", -40)
+                    .attr("y", -30)
                     .attr("text-anchor", "middle")
                     .style("font-weight", "bold")
-                    .style("font-size", "22px")
+                    .style("font-size", "20px")
+                    .style("font-family", fontFamily)
                     .style("fill", colorMap[model])
                     .text(d => d);
 
@@ -157,8 +164,8 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
                         const commonDim = fullDim.split('_')[1];
                         const axisG = d3.select(this);
                         axisG.selectAll(".axis-draw").data([null]).join("g").attr("class", "axis-draw").call(d3.axisLeft(yScale).ticks(5));
-                        axisG.selectAll(".axis-label").data([null]).join("text").attr("class", "axis-label").attr("y", -10).style("text-anchor", "middle").style("font-size", "11px").text(commonDim.toUpperCase());
-                        axisG.selectAll(".value-label").data([fullDim]).join("text").attr("class", "value-label").attr("y", height + 25).style("text-anchor", "middle").style("font-size", "12px");
+                        axisG.selectAll(".axis-label").data([null]).join("text").attr("class", "axis-label").attr("y", -10).style("text-anchor", "middle").style("font-family", fontFamily).style("font-size", "11px").text(commonDim.toUpperCase());
+                        axisG.selectAll(".value-label").data([fullDim]).join("text").attr("class", "value-label").attr("y", height + 25).style("text-anchor", "middle").style("font-family", fontFamily).style("font-size", "12px");
 
                         const brush = d3.brushY().extent([[-15, 0], [15, height]]).on("brush end", (e) => onBrush(e, commonDim));
                         const brushG = axisG.selectAll(".brush").data([null]).join("g").attr("class", "brush").call(brush);
@@ -174,35 +181,38 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
     }, [scoreData, selectedFeatureId, X, Y, Z]);
 
     return (
-        <div className="w-100 p-4">
-            <div className="card shadow-sm p-4" style={{ borderRadius: '15px', overflowX: 'auto' }}>
-                <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                    <div className="d-flex align-items-center gap-4">
-                        <h5 className="fw-bold m-0 text-dark">Explanation Score Analysis</h5>
-                        <div className="dropdown" style={{ position: 'relative' }}>
-                            <button className="btn btn-outline-dark btn-sm dropdown-toggle fw-bold" type="button" style={{ minWidth: '160px' }}>
-                                {selectedFeatureId ? `ID: ${selectedFeatureId}` : "Filtered Features"}
-                            </button>
-                            <div className="dropdown-content shadow" style={{ maxHeight: '300px', overflowY: 'auto', zIndex: 1000, minWidth: '160px' }}>
-                                {scoreData.filter(d => checkIsMatch(d, filtersRef.current)).sort((a, b) => a.feature_id - b.feature_id).map(d => (
-                                    <a key={d.feature_id} href="#" className={selectedFeatureId === d.feature_id ? "bg-light fw-bold text-danger" : ""} onClick={(e) => { e.preventDefault(); setSelectedFeatureId(d.feature_id); }}>
-                                        Feature {d.feature_id}
-                                    </a>
-                                ))}
+        <div className="p-2 h-100 w-100 d-flex flex-column" style={{ fontFamily: fontFamily, minWidth: 0 }}>
+                <div className="card-header bg-white border-0 pt-3 pb-0 px-4">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex align-items-center gap-3">
+                            <h5 className="fw-bold m-0 text-dark" style={{ fontSize: 'clamp(1rem, 1.0vw, 1.25rem)' }}>Explanation Score Analysis</h5>
+                            <div className="dropdown">
+                                <button className="btn btn-outline-dark btn-sm dropdown-toggle fw-bold" type="button" style={{ minWidth: '140px' }}>
+                                    {selectedFeatureId ? `ID: ${selectedFeatureId}` : "Filtered Features"}
+                                </button>
+                                <div className="dropdown-content shadow" style={{ maxHeight: '250px', overflowY: 'auto', zIndex: 1000 }}>
+                                    {scoreData.filter(d => checkIsMatch(d, filtersRef.current)).sort((a, b) => a.feature_id - b.feature_id).map(d => (
+                                        <a key={d.feature_id} href="#" className={selectedFeatureId === d.feature_id ? "bg-light fw-bold text-danger" : ""} onClick={(e) => { e.preventDefault(); setSelectedFeatureId(d.feature_id); }}>
+                                            Feature {d.feature_id}
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         </div>
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => {
+                            filtersRef.current.clear();
+                            d3.selectAll(".brush").call(d3.brushY().move, null);
+                            setSelectedFeatureId(null);
+                            setX({ label: X.label, range: [0, 1] });
+                            setY({ label: Y.label, range: [0, 1] });
+                            setZ({ label: Z.label, range: [0, 1] });
+                        }}>Reset</button>
                     </div>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => {
-                        filtersRef.current.clear();
-                        d3.selectAll(".brush").call(d3.brushY().move, null);
-                        setSelectedFeatureId(null);
-                        setX({ label: X.label, range: [0, 1] });
-                        setY({ label: Y.label, range: [0, 1] });
-                        setZ({ label: Z.label, range: [0, 1] });
-                    }}>Reset All</button>
                 </div>
-                <div ref={chartRef} className="d-flex justify-content-center"></div>
-            </div>
+
+                <div className="card-body p-2 flex-grow-1 overflow-hidden d-flex justify-content-center align-items-center">
+                    <div ref={chartRef} className="w-100 h-100"></div>
+                </div>
         </div>
     );
 }

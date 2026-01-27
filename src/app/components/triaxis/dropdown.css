@@ -1,3 +1,14 @@
+.score-analysis-container {
+    font-family: 'Roboto Mono', 'Source Code Pro', Consolas, Monaco, 'Courier New', monospace !important;
+}
+
+.score-analysis-container button,
+.score-analysis-container .dropdown-content a,
+.score-analysis-container h5 {
+    font-family: inherit; 
+    letter-spacing: -0.5px; 
+}
+
 .dropdown {
   position: relative;
   display: inline-block;

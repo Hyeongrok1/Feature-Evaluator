@@ -13,27 +13,27 @@ export default function Main() {
     const [Z, setZ] = useState({ label: "Detection", range: [0, 1] });
 
     return (
-        <div className="container-fluid p-0 bg-light min-vh-100 d-flex flex-column">
+        <div className="container-fluid p-0 bg-light vh-100 d-flex flex-column overflow-hidden">
             
-            <div className="d-flex flex-grow-2 overflow-hidden">
-                {/* View A */}
-                <div className="p-2" style={{ height: '400px' }}>
-                    <Header />
+            <div className="d-flex flex-row" style={{ flex: '0 0 65%', minHeight: 0 }}>
+                    {/* View A */}
+                <div style={{ flex: '0 0 25%', minWidth: 0 }} className="p-1">
+                    {/* <Header /> */}
                     <ViewA />
                 </div>
 
                 {/* View B */}
-                <div className="flex-grow-1 d-flex col-md-6 flex-column overflow-hidden">    
+                <div style={{ flex: '0 0 50%', minWidth: 0 }} className="p-1">  
                     <ViewB X={X} Y={Y} Z={Z} setX={setX} setY={setY} setZ={setZ} selectedFeatureId={selectedFeatureId} setSelectedFeatureId={setSelectedFeatureId} />
                 </div>
 
                 {/* View C */}
-                <div className="flex-grow-1 d-flex col-md-6 flex-column overflow-hidden">    
+                <div style={{ flex: '0 0 25%', minWidth: 0 }} className="p-1">
                     <ViewC selectedFeatureId={selectedFeatureId} />
                 </div>
             </div>
 
-            <div className="flex-grow-1 d-flex overflow-hidden">
+            <div className="d-flex" style={{ flex: '0 0 35%', minWidth: 0 }}>
                 <ViewD selectedFeatureId={selectedFeatureId} X={ X } Y={ Y } Z={ Z } setX={ setX } setY={ setY } setZ={ setZ } />
             </div>
         </div>

@@ -1,4 +1,3 @@
-/* 드롭다운 로직 */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -11,7 +10,7 @@
     min-width: 200px;
     border: 1px solid #dee2e6;
     border-radius: 8px;
-    z-index: 1050; /* 부트스트랩 모달급 z-index */
+    z-index: 1050; 
     left: 50%;
     transform: translateX(-50%);
 }
@@ -34,7 +33,6 @@
     display: block;
 }
 
-/* 슬라이더 커스텀 컬러 (이미지처럼 적용) */
 .range-slider {
     background: #e9ecef !important;
     height: 10px !important;
