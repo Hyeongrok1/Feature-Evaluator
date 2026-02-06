@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
 export default function Taglist({ selectedFeatureId, X, Y, Z, setX, setY, setZ }) {
+    // const preparedTags = 
+
     const [tags, setTags] = useState([
-        { id: 1, name: 'High Embedding', color: 'btn-primary', rangeX: [0.7, 1.0], rangeY: [0, 1], rangeZ: [0, 1] },
-        { id: 2, name: 'Low Fuzz', color: 'btn-success', rangeX: [0, 1], rangeY: [0, 0.3], rangeZ: [0, 1] },
+        { name: 'High Embedding', color: 'btn-primary', rangeX: [0.7, 1.0], rangeY: [0, 1], rangeZ: [0, 1] },
+        { name: 'Low Fuzz', color: 'btn-success', rangeX: [0, 1], rangeY: [0, 0.3], rangeZ: [0, 1] },
     ]);
 
     const [isCreating, setIsCreating] = useState(false);

@@ -1,0 +1,16 @@
+{   
+    "High Embedding": 
+    {
+        "embedding": [0.7, 1.0],
+        "fuzzing": [0, 1],
+        "detection": [0, 1],
+        "color": "btn-primary"
+    },
+    "Low Fuzz": 
+    {
+        "embedding": [0, 1],
+        "fuzzing": [0, 0.3],
+        "detection": [0, 1],
+        "color": "btn-success"
+    }
+}
