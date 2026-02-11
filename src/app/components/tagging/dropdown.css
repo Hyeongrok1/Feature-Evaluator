@@ -52,3 +52,41 @@
 .range-slider .range-slider__thumb[data-upper] {
     border-color: #dc3545 !important;
 }
+
+/* 1. 슬라이더 트랙 배경 */
+.range-slider {
+    height: 5px !important;
+    background: #e9ecef !important;
+    border-radius: 10px !important;
+}
+
+/* 2. 선택된 구간 (중간 막대) - 단색으로 통일 */
+.range-slider .range-slider__range {
+    background: #3b82f6 !important; 
+    border-radius: 10px !important;
+}
+
+/* 3. 슬라이더 핸들 (공통 스타일) */
+.range-slider .range-slider__thumb {
+    width: 16px !important;
+    height: 16px !important;
+    background: #ffffff !important;
+    /* 테두리 색상을 하나로 통일하여 이질감 제거 */
+    border: 2px solid #3b82f6 !important; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15) !important;
+}
+
+/* 4. 특정 핸들에 적용된 개별 색상 강제 초기화 */
+.range-slider .range-slider__thumb[data-lower],
+.range-slider .range-slider__thumb[data-upper] {
+    border-color: #3b82f6 !important; 
+}
+
+/* 5. 숫자 입력창 텍스트 정렬 및 스타일 */
+.range-slider-input-box {
+    text-align: center !important; /* 텍스트 중앙 정렬 */
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

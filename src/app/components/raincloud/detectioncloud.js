@@ -19,7 +19,7 @@ export default function FuzzCloud() {
 
         const margin = {top: 35, right: 180, bottom: 40, left: 45},
             totalWidth = 470,
-            totalHeight = 200,
+            totalHeight = 230,
             width = totalWidth - margin.left - margin.right,
             height = totalHeight - margin.top - margin.bottom; 
 
@@ -45,9 +45,9 @@ export default function FuzzCloud() {
             if (!rawData || rawData.length === 0) return;
 
             const categories = [
-                { key: 'first_detection', label: 'hugging-quants', color: '#69b3a2' },
-                { key: 'second_detection', label: 'Qwen', color: '#404080' },
-                { key: 'third_detection', label: 'openai', color: '#f8b195' }
+                { key: 'first_detection', label: 'openai', color: '#4263EB' },
+                { key: 'second_detection', label: 'google', color: '#845EF7' },
+                { key: 'third_detection', label: 'hugging-quants', color: '#0B7285' }
             ];
 
             const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
@@ -119,9 +119,9 @@ export default function FuzzCloud() {
                 .on("mouseleave", resetHighlight);
 
             legend.append("rect").attr("width", 10).attr("height", 10).style("fill", d => d.color);
-            legend.append("text").attr("x", 15).attr("y", 9).text(d => d.label).style("font-size", "11px").style("font-weight", "bold").style("font-family", "monospace");
-            legend.append("text").attr("x", 15).attr("y", 22).text(d => `avg:${d.mean.toFixed(2)} md:${d.median.toFixed(2)}`).style("font-size", "10px").style("font-family", "monospace");
-            legend.append("text").attr("x", 15).attr("y", 33).text(d => `var:${d.variance.toFixed(4)}`).style("font-size", "10px").style("font-family", "monospace").style("fill", "#dc3545");
+            legend.append("text").attr("x", 15).attr("y", 9).text(d => d.label).style("font-size", "15px").style("font-weight", "bold").style("font-family", "monospace");
+            legend.append("text").attr("x", 15).attr("y", 22).text(d => `avg:${d.mean.toFixed(2)} md:${d.median.toFixed(2)}`).style("font-size", "11px").style("font-family", "monospace");
+            legend.append("text").attr("x", 15).attr("y", 33).text(d => `var:${d.variance.toFixed(4)}`).style("font-size", "11px").style("font-family", "monospace").style("fill", "#dc3545");
         });
         
     }, []);

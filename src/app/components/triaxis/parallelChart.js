@@ -30,7 +30,7 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         if (!chartRef.current || scoreData.length === 0) return;
 
         const models = ['first', 'second', 'third'];
-        const modelNames = ['hugging-quants', 'Qwen', 'openai']; 
+        const modelNames = ['Openai', 'Google', 'Hugging-quants']; 
         
         const margin = { top: 70, right: 20, bottom: 40, left: 20 };
         const baseHeight = 600; 
@@ -54,7 +54,7 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         const mainG = svg.select(".main-g");
         
         const yScale = d3.scaleLinear().domain([0, 1]).range([height, 0]);
-        const colorMap = { first: "#69b3a2", second: "#404080", third: "#f8b195" };
+        const colorMap = { first: "#4263EB", second: "#845EF7", third: "#0B7285" };
 
         filtersRef.current.clear();
         if (X?.range && (X.range[0] > 0 || X.range[1] < 1)) 
@@ -181,38 +181,93 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
     }, [scoreData, selectedFeatureId, X, Y, Z]);
 
     return (
-        <div className="p-2 h-100 w-100 d-flex flex-column" style={{ fontFamily: fontFamily, minWidth: 0 }}>
-                <div className="card-header bg-white border-0 pt-3 pb-0 px-4">
-                    <div className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center gap-3">
-                            <h5 className="fw-bold m-0 text-dark" style={{ fontSize: 'clamp(1rem, 1.0vw, 1.25rem)' }}>Explanation Score Analysis</h5>
-                            <div className="dropdown">
-                                <button className="btn btn-outline-dark btn-sm dropdown-toggle fw-bold" type="button" style={{ minWidth: '140px' }}>
-                                    {selectedFeatureId ? `ID: ${selectedFeatureId}` : "Filtered Features"}
-                                </button>
-                                <div className="dropdown-content shadow" style={{ maxHeight: '250px', overflowY: 'auto', zIndex: 1000 }}>
-                                    {scoreData.filter(d => checkIsMatch(d, filtersRef.current)).sort((a, b) => a.feature_id - b.feature_id).map(d => (
-                                        <a key={d.feature_id} href="#" className={selectedFeatureId === d.feature_id ? "bg-light fw-bold text-danger" : ""} onClick={(e) => { e.preventDefault(); setSelectedFeatureId(d.feature_id); }}>
+        <div className="card w-100 h-100 d-flex flex-column shadow-sm" style={{ 
+            fontFamily: fontFamily, 
+            borderRadius: '12px', 
+            border: 'none',
+            backgroundColor: '#fff'
+        }}>
+            <div className="card-header bg-white border-bottom px-3" 
+                style={{ 
+                    overflow: 'visible', 
+                    zIndex: 1010, 
+                    height: '40px',         
+                    paddingTop: 0,         
+                    paddingBottom: 0 
+                }}>
+                <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center gap-3">
+                        <h6 className="m-0 fw-bold text-secondary" style={{ fontSize: '0.9rem' }}>
+                            Explanation Score Analysis
+                        </h6>
+                        
+                        <div className="dropdown" style={{ position: 'relative' }}>
+                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle fw-bold" 
+                                    type="button" 
+                                    style={{ 
+                                        minWidth: '130px', 
+                                        fontSize: '0.75rem',
+                                        height: '24px',
+                                        padding: '0 8px',
+                                        borderRadius: '4px'
+                                    }}>
+                                {selectedFeatureId ? `ID: ${selectedFeatureId}` : "Filtered Features"}
+                            </button>
+                            
+                            <div className="dropdown-content shadow" 
+                                style={{ 
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: '50%',          
+                                    transform: 'translateX(-50%)',
+                                    maxHeight: '300px', 
+                                    width: '180px',
+                                    overflowY: 'auto', 
+                                    zIndex: 9999,
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    marginTop: '8px',    
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)' 
+                                }}>
+                                {scoreData
+                                    .filter(d => checkIsMatch(d, filtersRef.current))
+                                    .sort((a, b) => a.feature_id - b.feature_id)
+                                    .map(d => (
+                                        <a key={d.feature_id} href="#" 
+                                        className={`px-3 py-2 d-block text-decoration-none ${selectedFeatureId === d.feature_id ? "bg-light fw-bold text-danger" : "text-dark"}`} 
+                                        style={{ fontSize: '0.8rem', borderBottom: '1px solid #eee' }}
+                                        onClick={(e) => { e.preventDefault(); setSelectedFeatureId(d.feature_id); }}>
                                             Feature {d.feature_id}
                                         </a>
                                     ))}
-                                </div>
                             </div>
                         </div>
-                        <button className="btn btn-sm btn-outline-danger" onClick={() => {
-                            filtersRef.current.clear();
-                            d3.selectAll(".brush").call(d3.brushY().move, null);
-                            setSelectedFeatureId(null);
-                            setX({ label: X.label, range: [0, 1] });
-                            setY({ label: Y.label, range: [0, 1] });
-                            setZ({ label: Z.label, range: [0, 1] });
-                        }}>Reset</button>
                     </div>
-                </div>
 
-                <div className="card-body p-2 flex-grow-1 overflow-hidden d-flex justify-content-center align-items-center">
-                    <div ref={chartRef} className="w-100 h-100"></div>
+                    <button className="btn btn-sm btn-outline-danger fw-bold" 
+                            style={{ fontSize: '0.75rem', height: '24px', padding: '0 12px' }} 
+                            onClick={() => {
+                                filtersRef.current.clear();
+                                d3.selectAll(".brush").call(d3.brushY().move, null);
+                                setSelectedFeatureId(null);
+                                setX({ label: X.label, range: [0, 1] });
+                                setY({ label: Y.label, range: [0, 1] });
+                                setZ({ label: Z.label, range: [0, 1] });
+                            }}>
+                        Reset
+                    </button>
                 </div>
+            </div>
+
+            <div className="card-body p-2 flex-grow-1 overflow-hidden d-flex justify-content-center align-items-center">
+                <div ref={chartRef} className="w-100 h-100"></div>
+            </div>
+            
+            <style>{`
+                .dropdown-content::-webkit-scrollbar { width: 4px; }
+                .dropdown-content::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+            `}</style>
         </div>
     );
 }
