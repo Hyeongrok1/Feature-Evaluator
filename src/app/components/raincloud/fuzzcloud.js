@@ -39,7 +39,7 @@ export default function FuzzCloud() {
             .style("font-weight", "bold")
             .style("fill", "#333")
             .style("font-family", "monospace")
-            .text("Fuzz Distribution & Variance");
+            .text("Fuzz score");
 
         get_scores().then(function(rawData) {
             if (!rawData || rawData.length === 0) return;
