@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FuzzCloud from './fuzzcloud.js'
 import EmbeddingCloud from './embeddingcloud.js';
 import DetectionCloud from './detectioncloud.js';
 
 export default function ViewA() {
+    const [hoveredModel, setHoveredModel] = useState(null); 
     const fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+
     return (
         <div className="card shadow-sm h-100" style={{ 
             background: '#fff', 
@@ -27,9 +29,15 @@ export default function ViewA() {
                 </h6>
             </div>
             <div className="card-body p-2 d-flex flex-column justify-content-between h-100">
-                <div style={{ flex: '0 0 33%', minHeight: 0 }}><FuzzCloud /></div>
-                <div style={{ flex: '0 0 33%', minHeight: 0 }}><DetectionCloud /></div>
-                <div style={{ flex: '0 0 33%', minHeight: 0 }}><EmbeddingCloud /></div>
+                <div style={{ flex: '0 0 33%', minHeight: 0 }}>
+                    <FuzzCloud hoveredModel={hoveredModel} setHoveredModel={setHoveredModel} />
+                </div>
+                <div style={{ flex: '0 0 33%', minHeight: 0 }}>
+                    <DetectionCloud hoveredModel={hoveredModel} setHoveredModel={setHoveredModel} />
+                </div>
+                <div style={{ flex: '0 0 33%', minHeight: 0 }}>
+                    <EmbeddingCloud hoveredModel={hoveredModel} setHoveredModel={setHoveredModel} />
+                </div>
             </div>
         </div>
     );

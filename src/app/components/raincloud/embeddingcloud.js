@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { get_scores } from './data';
 import * as d3 from 'd3';
 
-export default function FuzzCloud() {
+export default function EmbeddingCloud({ hoveredModel, setHoveredModel }) {
     const chartRef = useRef(null);
+    const svgRef = useRef(null);
 
     const kernelDensityEstimator = (kernel, X) => {
         return (V) => X.map(x => [x, d3.mean(V, v => kernel(x - v))]);
@@ -14,12 +15,10 @@ export default function FuzzCloud() {
 
     useEffect(() => {
         if (!chartRef.current) return;
-        
         d3.select(chartRef.current).selectAll("*").remove();
 
         const margin = {top: 35, right: 180, bottom: 40, left: 45},
-            totalWidth = 470,
-            totalHeight = 230,
+            totalWidth = 470, totalHeight = 230,
             width = totalWidth - margin.left - margin.right,
             height = totalHeight - margin.top - margin.bottom; 
 
@@ -31,56 +30,38 @@ export default function FuzzCloud() {
             .style("height", "auto") 
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
+        
+        svgRef.current = svg;
 
         svg.append("text")
-            .attr("x", 0)             
-            .attr("y", -margin.top / 2 - 4) 
-            .style("font-size", "16px") 
-            .style("font-weight", "bold")
-            .style("fill", "#333")
-            .style("font-family", "monospace")
+            .attr("x", 0).attr("y", -margin.top / 2 - 4) 
+            .style("font-size", "16px").style("font-weight", "bold")
+            .style("fill", "#333").style("font-family", "monospace")
             .text("Embedding score");
 
         get_scores().then(function(rawData) {
             if (!rawData || rawData.length === 0) return;
 
             const categories = [
-                { key: 'first_embedding', label: 'openai', color: '#4263EB' },
-                { key: 'second_embedding', label: 'google', color: '#845EF7' },
-                { key: 'third_embedding', label: 'hugging-quants', color: '#0B7285' }
+                { id: 'first', key: 'first_embedding', label: 'Gpt-4o-mini', color: '#4263EB' },
+                { id: 'second', key: 'second_embedding', label: 'Gemini-flash', color: '#845EF7' },
+                { id: 'third', key: 'third_embedding', label: 'Llama', color: '#0B7285' }
             ];
 
             const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
             svg.append("g")
                 .attr("transform", `translate(0, ${height})`)
                 .call(d3.axisBottom(x).ticks(5))
-                .style("font-size", "10px")
-                .style("font-family", "monospace"); 
+                .style("font-size", "10px").style("font-family", "monospace"); 
 
             const kde = kernelDensityEstimator(kernelEpanechnikov(0.05), x.ticks(40));
-            
             const allDensities = categories.map(cat => {
                 const values = rawData.map(d => d[cat.key]);
-                return {
-                    ...cat,
-                    density: kde(values),
-                    mean: d3.mean(values),
-                    median: d3.median(values),
-                    variance: d3.variance(values)
-                };
+                return { ...cat, density: kde(values), mean: d3.mean(values), median: d3.median(values), variance: d3.variance(values) };
             });
 
             const maxY = d3.max(allDensities, c => d3.max(c.density, d => d[1]));
             const y = d3.scaleLinear().range([height, 0]).domain([0, maxY * 1.1]);
-
-            const highlightModel = (key) => {
-                svg.selectAll("path").style("opacity", 0.05); 
-                svg.selectAll(`.cloud-${key}`).style("opacity", 0.7).style("stroke-width", 2);
-            };
-
-            const resetHighlight = () => {
-                svg.selectAll("path").style("opacity", "0.3").style("stroke-width", 1.2);
-            };
 
             allDensities.forEach((cat, i) => {
                 svg.append("path")
@@ -89,25 +70,19 @@ export default function FuzzCloud() {
                     .attr("opacity", "0.3") 
                     .attr("stroke", cat.color)
                     .attr("stroke-width", 1.2)
-                    .attr("class", `cloud-${cat.key}`) 
-                    .attr("d", d3.area()
-                        .curve(d3.curveBasis)
-                        .x(d => x(d[0]))
-                        .y0(height) 
-                        .y1(d => y(d[1])) 
-                    )
-                    .on("mouseover", () => highlightModel(cat.key))
-                    .on("mouseleave", resetHighlight);
+                    .attr("class", `cloud-path cloud-${cat.id}`) 
+                    .attr("d", d3.area().curve(d3.curveBasis).x(d => x(d[0])).y0(height).y1(d => y(d[1])))
+                    .on("mouseover", () => setHoveredModel(cat.id)) 
+                    .on("mouseleave", () => setHoveredModel(null));
 
-                svg.selectAll(`.dot-${cat.key}`)
+                svg.selectAll(`.dot-${cat.id}`)
                     .data(rawData.filter((_, idx) => idx % 20 === 0)) 
-                    .enter()
-                    .append("circle")
+                    .enter().append("circle")
+                    .attr("class", `cloud-dot dot-${cat.id}`)
                     .attr("cx", d => x(d[cat.key]))
                     .attr("cy", height + 8 + (i * 8)) 
                     .attr("r", 1)
-                    .style("fill", cat.color)
-                    .attr("opacity", 0.4);
+                    .style("fill", cat.color).attr("opacity", 0.4);
             });
 
             const legend = svg.selectAll(".legend")
@@ -115,27 +90,34 @@ export default function FuzzCloud() {
                 .enter().append("g")
                 .attr("transform", (d, i) => `translate(${width + 10}, ${i * 45 - 5})`) 
                 .style("cursor", "pointer")
-                .on("mouseover", (event, d) => highlightModel(d.key))
-                .on("mouseleave", resetHighlight);
+                .on("mouseover", (event, d) => setHoveredModel(d.id))
+                .on("mouseleave", () => setHoveredModel(null));
 
             legend.append("rect").attr("width", 10).attr("height", 10).style("fill", d => d.color);
             legend.append("text").attr("x", 15).attr("y", 9).text(d => d.label).style("font-size", "15px").style("font-weight", "bold").style("font-family", "monospace");
             legend.append("text").attr("x", 15).attr("y", 22).text(d => `avg:${d.mean.toFixed(2)} md:${d.median.toFixed(2)}`).style("font-size", "11px").style("font-family", "monospace");
             legend.append("text").attr("x", 15).attr("y", 33).text(d => `var:${d.variance.toFixed(4)}`).style("font-size", "10px").style("font-family", "monospace").style("fill", "#dc3545");
         });
-        
     }, []);
+
+    useEffect(() => {
+        if (!svgRef.current) return;
+        const svg = svgRef.current;
+
+        if (hoveredModel) {
+            svg.selectAll(".cloud-path").style("opacity", 0.05);
+            svg.selectAll(".cloud-dot").style("opacity", 0.05);
+            svg.selectAll(`.cloud-${hoveredModel}`).style("opacity", 0.7).style("stroke-width", 2);
+            svg.selectAll(`.dot-${hoveredModel}`).style("opacity", 0.8);
+        } else {
+            svg.selectAll(".cloud-path").style("opacity", 0.3).style("stroke-width", 1.2);
+            svg.selectAll(".cloud-dot").style("opacity", 0.4);
+        }
+    }, [hoveredModel]);
 
     return (
         <div className="w-100" style={{ display: 'flex', justifyContent: 'center', minWidth: 0 }}>
-            <div 
-                ref={chartRef} 
-                className="w-100"
-                style={{ 
-                    background: '#fff', 
-                    overflow: 'visible'
-                }}
-            ></div>
+            <div ref={chartRef} className="w-100" style={{ background: '#fff', overflow: 'visible' }}></div>
         </div>
     );
 }

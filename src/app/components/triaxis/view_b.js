@@ -1,8 +1,7 @@
 import React from 'react';
 import ParallelChart from './parallelChart';
 
-export default function ViewB({ X, Y, Z, setX, setY, setZ, selectedFeatureId, setSelectedFeatureId }) {
-
+export default function ViewB({ X, Y, Z, setX, setY, setZ, selectedFeatureId, setSelectedFeatureId, onFilterChange }) {
     return (
             <div 
                 className="card shadow-sm h-100" 
@@ -19,6 +18,7 @@ export default function ViewB({ X, Y, Z, setX, setY, setZ, selectedFeatureId, se
                         setX={setX} setY={setY} setZ={setZ} 
                         selectedFeatureId={selectedFeatureId} 
                         setSelectedFeatureId={setSelectedFeatureId}
+                        onFilterChange={onFilterChange}
                     />
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getFeatureSummary } from './gemini';
 
-export default function FeatureAbstract({ X, Y, Z }) {
+export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
     const [summary, setSummary] = useState("Enter your Gemini API key and adjust the ranges to generate a summary.");
     const [loading, setLoading] = useState(false);
     const [apiKey, setApiKey] = useState("");
@@ -23,10 +23,9 @@ export default function FeatureAbstract({ X, Y, Z }) {
         if (!apiKey) { alert("Enter your Gemini API key."); return; }
         setLoading(true);
         try {
-            const response = await fetch('https://raw.githubusercontent.com/Hyeongrok1/d3-practice/refs/heads/main/public/data.json');
+            const response = await fetch('https://raw.githubusercontent.com/Hyeongrok1/Feature-Evaluator/refs/heads/main/public/data.json');
             const jsonObject = await response.json();
-            const result = await getFeatureSummary(jsonObject, { X, Y, Z }, apiKey.trim());
-            setSummary(result || "No result");
+            const result = await getFeatureSummary(jsonObject, targetFeatures, apiKey.trim());            setSummary(result || "No result");
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
         } catch (error) { 
             setSummary(`Error: ${error.message}`); 

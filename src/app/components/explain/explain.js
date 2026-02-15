@@ -8,7 +8,7 @@ export default function ExplainView({ selectedFeatureId }) {
         { Text: "Select a feature to see explanation..." }
     ]);
     
-    const titles = ["Openai", "Google", "Hugging-quants"];
+    const titles = ["Gpt-4o-mini", "Gemini-flash", "Llama"];
     const color = ["#4263EB", "#845EF7", "#0B7285"];
     const fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
 
@@ -52,7 +52,6 @@ export default function ExplainView({ selectedFeatureId }) {
                             fontFamily: fontFamily, 
                             fontSize: '0.8rem', 
                             color: color[i],
-                            textTransform: 'uppercase'
                         }}>
                             {titles[i]}
                         </div>

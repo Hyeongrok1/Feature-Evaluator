@@ -4,7 +4,7 @@ import Ranging from './range.js';
 import preparedTagsData from './tag.json';
 import FeatureAbstract from './abstract';
 
-export default function ViewD({ setSelectedFeatureId, X, Y, Z, setX, setY, setZ }) {
+export default function ViewD({ X, Y, Z, setX, setY, setZ, filteredFeatures }) {
     const [tags, setTags] = useState(() => {
         return Object.entries(preparedTagsData).map(([name, data]) => ({
             id: name + "-" + Math.random().toString(36).substr(2, 9),
@@ -67,7 +67,7 @@ export default function ViewD({ setSelectedFeatureId, X, Y, Z, setX, setY, setZ 
                                 minHeight: 0, 
                                 overflow: 'hidden' 
                             }}>
-                            <FeatureAbstract X={X} Y={Y} Z={Z} />
+                            <FeatureAbstract X={X} Y={Y} Z={Z} targetFeatures={filteredFeatures} />
                         </div>
                 </div>
             </div>
