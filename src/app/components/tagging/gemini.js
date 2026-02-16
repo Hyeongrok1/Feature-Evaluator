@@ -92,7 +92,7 @@ export const getFeatureSummary = async (jsonData, X, Y, Z, filteredSets, apikey)
         - 모델별 해석 성향 대조 분석
         - 설명의 질적 특이점 및 통계적 유의미성
         - 해당 점수 범위의 기술적 시사점
-        - 전문가 인사이트 요약
+        - 인사이트 요약
     `;
 
     try {
