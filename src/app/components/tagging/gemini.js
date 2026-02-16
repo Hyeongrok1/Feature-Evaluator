@@ -64,6 +64,12 @@ export const getFeatureSummary = async (jsonData, X, Y, Z, filteredSets, apikey)
         당신은 Sparse Autoencoder(SAE) 해석 및 평가 전문가입니다.
         제공된 메트릭 범위를 기준으로 필터링된 모델별 데이터의 특성을 대조 분석하여 보고서를 작성하세요.
         
+        ### [참조 지식: 메트릭 정의]
+        1. DETECTION: 전체 문맥의 활성화 여부를 식별. 문맥 파악 능력 중심.
+        2. FUZZING: 개별 토큰의 활성화 여부를 식별. 시뮬레이션과 상관관계 높음.
+        3. EMBEDDING: 해석(쿼리)과 문맥(문서) 간의 의미론적 유사도 기반 AUROC 점수.
+        * Fuzzing은 높고 Detection이 낮으면 특정 단어에는 반응하나 문맥 이해는 부족한 해석임.
+
         ### [중요 지시 사항]
         - 출력문에 볼드체 강조 기호(예: **텍스트**)를 절대 사용하지 마세요. 
         - 모든 텍스트는 일반 텍스트로만 작성하세요.
@@ -78,6 +84,7 @@ export const getFeatureSummary = async (jsonData, X, Y, Z, filteredSets, apikey)
           Llama-3.1-70B: ${uniqueSamples.llama.length}개
 
         ### [2. 모델별 격리 분석 데이터 (샘플)]
+        *주의: 아래 데이터는 분석을 돕기 위한 일부 샘플이며, 전체 경향은 위 통계 수치를 바탕으로 판단하세요.*
         - GPT 분석 데이터: ${JSON.stringify(uniqueSamples.gpt.slice(0, 3), null, 2)}
         - Gemini 분석 데이터: ${JSON.stringify(uniqueSamples.gemini.slice(0, 3), null, 2)}
         - Llama 분석 데이터: ${JSON.stringify(uniqueSamples.llama.slice(0, 3), null, 2)}
