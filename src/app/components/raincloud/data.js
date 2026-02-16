@@ -17,21 +17,22 @@ export async function get_scores() {
     const data = await get_data();
 
     const transformFeatures = (data) => {
-        if (!data.features) return [];
+        if (!data || !data.features) return [];
 
         return data.features.map(feature => {
-            const exps = feature.explanations;
+            const modelOrder = ["gpt", "gemini", "llama"];
 
-            const baseResult = {
-                feature_id: feature.feature_id,
-                first_fuzz: -1, first_detection: -1, first_embedding: -1,
-                second_fuzz: -1, second_detection: -1, second_embedding: -1,
-                third_fuzz: -1, third_detection: -1, third_embedding: -1
-            };
+            const sortedExps = (feature.explanations || []).sort((a, b) => {
+                const nameA = (a.llm_explainer || "").toLowerCase();
+                const nameB = (b.llm_explainer || "").toLowerCase();
+                
+                const indexA = modelOrder.findIndex(m => nameA.includes(m));
+                const indexB = modelOrder.findIndex(m => nameB.includes(m));
+                
+                return indexA - indexB;
+            });
 
-            if (!exps || exps.length === 0) return baseResult;
-
-            const getScoreSafe = (index) => (exps[index] && exps[index].scores) ? exps[index].scores : {};
+            const getScoreSafe = (index) => (sortedExps[index] && sortedExps[index].scores) ? sortedExps[index].scores : {};
 
             const firstScore = getScoreSafe(0);
             const secondScore = getScoreSafe(1);

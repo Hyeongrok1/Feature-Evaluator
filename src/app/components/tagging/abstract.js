@@ -25,7 +25,7 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
         try {
             const response = await fetch('https://raw.githubusercontent.com/Hyeongrok1/Feature-Evaluator/refs/heads/main/public/data.json');
             const jsonObject = await response.json();
-            const result = await getFeatureSummary(jsonObject, targetFeatures, apiKey.trim());            setSummary(result || "No result");
+            const result = await getFeatureSummary(jsonObject, X, Y, Z, targetFeatures, apiKey.trim());            setSummary(result || "No result");
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
         } catch (error) { 
             setSummary(`Error: ${error.message}`); 

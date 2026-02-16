@@ -1,81 +1,105 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-/**
- * @param {Object} jsonData - 전체 데이터 (필요 시 참조)
- * @param {Object} filteredSets - { all: [], gpt: [], gemini: [], llama: [] }
- * @param {string} apikey - API 키
- */
-export const getFeatureSummary = async (jsonData, filteredSets, apikey) => {
+export const getFeatureSummary = async (jsonData, X, Y, Z, filteredSets, apikey) => {
     const genAI = new GoogleGenerativeAI(apikey);
-    const { all, gpt, gemini, llama } = filteredSets;
+    const { gpt, gemini, llama } = filteredSets;
 
-    // 1. 전달받은 필터링된 배열에서 모델별 explanation과 score를 매핑
-    // ParallelChart의 데이터 구조(first_embedding 등)를 그대로 사용합니다.
-    const samples = {
-        gpt: gpt.slice(0, 3).map(d => ({
-            feature_id: d.feature_id,
-            explanation: d.first_explanation || "No explanation",
-            scores: { embedding: d.first_embedding, fuzz: d.first_fuzz, detection: d.first_detection }
-        })),
-        gemini: gemini.slice(0, 3).map(d => ({
-            feature_id: d.feature_id,
-            explanation: d.second_explanation || "No explanation",
-            scores: { embedding: d.second_embedding, fuzz: d.second_fuzz, detection: d.second_detection }
-        })),
-        llama: llama.slice(0, 3).map(d => ({
-            feature_id: d.feature_id,
-            explanation: d.third_explanation || "No explanation",
-            scores: { embedding: d.third_embedding, fuzz: d.third_fuzz, detection: d.third_detection }
-        }))
+    const gptTargetIds = new Set(gpt.map(f => f.feature_id));
+    const geminiTargetIds = new Set(gemini.map(f => f.feature_id));
+    const llamaTargetIds = new Set(llama.map(f => f.feature_id));
+
+    const samples = { gpt: [], gemini: [], llama: [] };
+
+    if (!jsonData || !jsonData.features) return "Data unloaded";
+
+    jsonData.features.forEach(feature => {
+        const fId = feature.feature_id;
+        
+        const isGptTarget = gptTargetIds.has(fId);
+        const isGeminiTarget = geminiTargetIds.has(fId);
+        const isLlamaTarget = llamaTargetIds.has(fId);
+
+        if (!isGptTarget && !isGeminiTarget && !isLlamaTarget) return;
+
+        (feature.explanations || []).forEach(exp => {
+            const explainer = exp.llm_explainer;
+
+            const normalizedExplainer = explainer.trim();
+
+            if (normalizedExplainer === "openai/gpt-4o-mini" && isGptTarget) {
+                samples.gpt.push({
+                    id: fId,
+                    text: exp.text,
+                    fuzz: exp.scores.fuzz,
+                    detect: exp.scores.detection
+                });
+            } 
+            else if (normalizedExplainer === "google/gemini-flash-2.5" && isGeminiTarget) {
+                samples.gemini.push({
+                    id: fId,
+                    text: exp.text,
+                    fuzz: exp.scores.fuzz,
+                    detect: exp.scores.detection
+                });
+            } 
+            else if (normalizedExplainer === "hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4" && isLlamaTarget) {
+                samples.llama.push({
+                    id: fId,
+                    text: exp.text,
+                    fuzz: exp.scores.fuzz,
+                    detect: exp.scores.detection
+                });
+            }
+        });
+    });
+
+    const uniqueSamples = {
+        gpt: Array.from(new Map(samples.gpt.map(item => [item.id, item])).values()),
+        gemini: Array.from(new Map(samples.gemini.map(item => [item.id, item])).values()),
+        llama: Array.from(new Map(samples.llama.map(item => [item.id, item])).values())
     };
+    
 
     const prompt = `
-        당신은 Sparse Autoencoder(SAE) 해석 전문가입니다.
-        아래 통계는 화면 상단의 드롭다운 버튼 숫자(All, GPT, Gemini, Llama)와 물리적으로 동일한 데이터입니다.
-        가상의 수치를 절대 언급하지 말고, 제공된 숫자만 사용하여 분석 보고서를 작성하세요.
+        당신은 Sparse Autoencoder(SAE) 해석 및 평가 전문가입니다.
+        제공된 메트릭 범위를 기준으로 필터링된 모델별 데이터의 특성을 대조 분석하여 보고서를 작성하세요.
+        
+        ### [중요 지시 사항]
+        - 출력문에 볼드체 강조 기호(예: **텍스트**)를 절대 사용하지 마세요. 
+        - 모든 텍스트는 일반 텍스트로만 작성하세요.
+        - 불필요한 줄바꿈을 최소화하고 가독성 있게 작성하세요.
+        - 가상의 수치를 지어내지 말고 제공된 통계 수치만 인용하세요.
 
-        ### [제약 사항]
-        - 출력문에 볼드체 강조 기호(**)를 절대 사용하지 마세요.
-        - 모든 강조는 일반 텍스트로만 구성하세요.
-        - 불필요한 줄바꿈을 최소화하여 가독성을 높이세요.
+        ### [1. 필터링 기준 및 통계]
+        - 설정 범위: Embedding(${X.range[0].toFixed(3)}~${X.range[1].toFixed(3)}), Fuzz(${Y.range[0].toFixed(3)}~${Y.range[1].toFixed(3)}), Detection(${Z.range[0].toFixed(3)}~${Z.range[1].toFixed(3)})
+        - 범위 내 모델별 유효 데이터 수: 
+          GPT-4o-mini: ${uniqueSamples.gpt.length}개
+          Gemini-flash: ${uniqueSamples.gemini.length}개
+          Llama-3.1-70B: ${uniqueSamples.llama.length}개
 
-        ### [1. 확정 필터링 통계]
-        - 전체(All) 필터링된 피처 수: ${all.length}개
-        - 모델별 개별 통계:
-          * GPT-4o-mini: ${gpt.length}개
-          * Gemini-flash: ${gemini.length}개
-          * Llama-3.1-70B: ${llama.length}개
+        ### [2. 모델별 격리 분석 데이터 (샘플)]
+        - GPT 분석 데이터: ${JSON.stringify(uniqueSamples.gpt.slice(0, 3), null, 2)}
+        - Gemini 분석 데이터: ${JSON.stringify(uniqueSamples.gemini.slice(0, 3), null, 2)}
+        - Llama 분석 데이터: ${JSON.stringify(uniqueSamples.llama.slice(0, 3), null, 2)}
 
-        ### [2. 모델별 샘플 데이터]
-        *동일한 Feature ID에 대해 모델들이 어떻게 다르게 해석했는지 대조 분석하세요.*
-        - GPT 샘플: ${JSON.stringify(samples.gpt, null, 2)}
-        - Gemini 샘플: ${JSON.stringify(samples.gemini, null, 2)}
-        - Llama 샘플: ${JSON.stringify(samples.llama, null, 2)}
-
-        ### [3. 분석 요청]
-        1. 모델별 해석 분포: 위 확정 통계 숫자를 인용하여, 특정 모델이 이 구간에서 더 높은 빈도로 발견되는 이유를 분석하세요.
-        2. 설명 전략 대조: 샘플 데이터를 통해 동일 피처에 대해 각 모델이 사용한 어휘의 정밀도와 개념적 깊이를 비교하세요.
-        3. 기술적 인사이트: 현재 설정된 메트릭 범위가 고품질 SAE 피처를 선별하는 지표로서 어떤 유의미한 가치를 지니는지 3문장 이내로 요약하세요.
+        ### [3. 분석 요청 사항]
+        1. 모델별 해석 전략 대조: 동일한 Feature ID가 존재할 경우 각 모델이 포착한 개념의 구체성과 어휘 선택의 차이를 비교하세요.
+        2. 수량 및 분포 성향: 위 통계 숫자를 바탕으로 특정 모델이 이 점수 구간에서 더 높은 빈도로 발견되는 이유를 기술하세요.
+        3. 점수와 해석의 상관관계: 각 모델의 fuzz 및 detect 점수가 실제 설명(text)의 선명도와 어떻게 연결되는지 분석하세요.
+        4. 기술적 통찰: 현재 설정된 메트릭 구간이 고품질 SAE 피처를 선별하는 지표로서 어떤 유의미한 가치를 지니는지 요약하세요.
 
         ### [출력 형식]
         - 모델별 해석 성향 대조 분석
-        - 설명의 질적 특이점 분석
-        - 기술적 시사점 및 전문가 요약
+        - 설명의 질적 특이점 및 통계적 유의미성
+        - 해당 점수 범위의 기술적 시사점
+        - 전문가 인사이트 요약
     `;
-
-    // 디버깅 로그
-    console.group("📊 Gemini API Sync Debug");
-    console.log("Counts - All:", all.length, "GPT:", gpt.length, "Gemini:", gemini.length, "Llama:", llama.length);
-    console.log("Sample Data Sent:", samples);
-    console.groupEnd();
 
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
         const result = await model.generateContent(prompt);
-        // 결과에서 볼드체 기호 완전 제거
         return result.response.text().replace(/\*\*/g, "");
     } catch (error) {
-        console.error("Gemini API Error:", error);
         return `Error: ${error.message}`;
     }
 };

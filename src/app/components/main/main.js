@@ -10,7 +10,6 @@ export default function Main() {
     const [Y, setY] = useState({ label: "Fuzz", range: [0, 1] });
     const [Z, setZ] = useState({ label: "Detection", range: [0, 1] });
     
-    // 추가: 필터링된 피처 배열 상태
     const [filteredFeatures, setFilteredFeatures] = useState([]);
 
     return (
@@ -25,7 +24,7 @@ export default function Main() {
                         X={X} Y={Y} Z={Z} setX={setX} setY={setY} setZ={setZ} 
                         selectedFeatureId={selectedFeatureId} 
                         setSelectedFeatureId={setSelectedFeatureId}
-                        onFilterChange={setFilteredFeatures} // 추가: 콜백 전달
+                        onFilterChange={setFilteredFeatures} 
                     />
                 </div>
 
@@ -35,7 +34,6 @@ export default function Main() {
             </div>
 
             <div className="d-flex" style={{ flex: '0 0 28%', minWidth: 0 }}>
-                {/* ViewD에 필터링된 데이터 전달 */}
                 <ViewD 
                     X={ X } Y={ Y } Z={ Z } setX={ setX } setY={ setY } setZ={ setZ } 
                     filteredFeatures={filteredFeatures} 

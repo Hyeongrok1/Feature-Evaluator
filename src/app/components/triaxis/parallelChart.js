@@ -6,7 +6,6 @@ import "./dropdown.css";
 export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatureId, setSelectedFeatureId, onFilterChange }) {
     const chartRef = useRef(null);
     const [scoreData, setScoreData] = useState([]);
-    const filtersRef = useRef(new Map());
     const isInternalUpdate = useRef(false);
     const fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
 
@@ -15,7 +14,9 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
     const colorMap = { first: "#4263EB", second: "#845EF7", third: "#0B7285" };
 
     useEffect(() => {
-        get_scores().then(data => { if (data && data.length > 0) setScoreData(data); });
+        get_scores().then(data => { 
+            if (data && data.length > 0) setScoreData(data); 
+        });
     }, []);
 
     const validateFilter = (val, range) => {
@@ -50,6 +51,19 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
             );
         });
     };
+
+    const allFiltered = getAllFilteredData();
+
+    useEffect(() => {
+        if (onFilterChange) {
+            onFilterChange({
+                all: allFiltered,
+                gpt: getFilteredDataByModel('first'),
+                gemini: getFilteredDataByModel('second'),
+                llama: getFilteredDataByModel('third')
+            });
+        }
+    }, [X, Y, Z, scoreData]);
 
     useEffect(() => {
         if (!chartRef.current || scoreData.length === 0) return;
@@ -178,18 +192,10 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         updateStyles();
     }, [scoreData, selectedFeatureId, X, Y, Z]);
 
-    const allFiltered = getAllFilteredData();
-
-        useEffect(() => {
-            if (onFilterChange) {
-                onFilterChange({
-                    all: getAllFilteredData(),
-                    gpt: getFilteredDataByModel('first'),
-                    gemini: getFilteredDataByModel('second'),
-                    llama: getFilteredDataByModel('third')
-                });
-            }
-        }, [X, Y, Z, scoreData]);
+    const dropdownStyle = { position: 'absolute', top: '100%', left: '0', maxHeight: '250px', width: '130px', overflowY: 'auto', zIndex: 9999, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
+    const itemStyle = { fontSize: '0.72rem', borderBottom: '1px solid #eee' };
+    const noMatchStyle = { padding: '8px 12px', color: '#adb5bd', fontSize: '0.65rem', textAlign: 'center' };
+    const itemClass = (id, selectedId) => `px-3 py-1 d-block text-decoration-none ${selectedId === id ? "bg-light fw-bold text-danger" : "text-dark"}`;
 
     return (
         <div className="card w-100 h-100 d-flex flex-column shadow-sm" style={{ 
@@ -204,9 +210,16 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
                             <div className="dropdown" style={{ position: 'relative' }}>
                                 <button className="btn btn-sm btn-outline-secondary dropdown-toggle fw-bold" 
                                         type="button" style={{ minWidth: '70px', fontSize: '0.68rem', height: '22px', padding: '0 6px', borderRadius: '4px' }}>
-                                    All ({allFiltered.length})
+                                    {selectedFeatureId !== null ? `Feature ${selectedFeatureId}` : `All (${allFiltered.length})`}
                                 </button>
                                 <div className="dropdown-content shadow" style={dropdownStyle}>
+                                    {selectedFeatureId !== null && (
+                                        <a href="#" className="px-3 py-1 d-block text-decoration-none text-primary fw-bold" 
+                                           style={itemStyle}
+                                           onClick={(e) => { e.preventDefault(); setSelectedFeatureId(null); }}>
+                                            ← Back to All
+                                        </a>
+                                    )}
                                     {allFiltered.length > 0 ? (
                                         allFiltered.sort((a,b)=>a.feature_id - b.feature_id).map(d => (
                                             <a key={d.feature_id} href="#" className={itemClass(d.feature_id, selectedFeatureId)} style={itemStyle}
@@ -265,8 +278,3 @@ export default function ParallelChart({ X, Y, Z, setX, setY, setZ, selectedFeatu
         </div>
     );
 }
-
-const dropdownStyle = { position: 'absolute', top: '100%', left: '0', maxHeight: '250px', width: '130px', overflowY: 'auto', zIndex: 9999, backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', marginTop: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' };
-const itemStyle = { fontSize: '0.72rem', borderBottom: '1px solid #eee' };
-const noMatchStyle = { padding: '8px 12px', color: '#adb5bd', fontSize: '0.65rem', textAlign: 'center' };
-const itemClass = (id, selectedId) => `px-3 py-1 d-block text-decoration-none ${selectedId === id ? "bg-light fw-bold text-danger" : "text-dark"}`;

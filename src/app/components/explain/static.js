@@ -102,27 +102,38 @@ export async function get_scatter_data(X, Y) {
 
 export async function get_explains(featureId) {
     const data = await get_data();
-    let explanation = null;
+    let explanations = null;
 
     const foundFeature = data.features.find(feature => 
         feature.feature_id === featureId
     );
     
-    if (foundFeature) explanation = foundFeature.explanations;
+    if (foundFeature) explanations = foundFeature.explanations;
     
-    if (explanation === null || explanation === undefined) {
+    if (!explanations || !Array.isArray(explanations)) {
         const defaultItem = {
-            llm_explainer: "",
+            explainer: "",
             detection: 0,
             embedding: 0,
             fuzz: 0,
-            Text: ""
+            Text: "No data available"
         };
-        
         return new Array(3).fill(defaultItem); 
     }
 
-    const transformedData = explanation.map(item => {
+    const modelOrder = ["gpt", "gemini", "llama"];
+
+    const sortedExplanations = [...explanations].sort((a, b) => {
+        const nameA = (a.llm_explainer || "").toLowerCase();
+        const nameB = (b.llm_explainer || "").toLowerCase();
+        
+        const indexA = modelOrder.findIndex(m => nameA.includes(m));
+        const indexB = modelOrder.findIndex(m => nameB.includes(m));
+        
+        return indexA - indexB;
+    });
+
+    const transformedData = sortedExplanations.map(item => {
         const scores = item.scores || {}; 
         
         return {
