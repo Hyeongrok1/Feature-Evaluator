@@ -25,7 +25,8 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
         try {
             const response = await fetch('https://raw.githubusercontent.com/Hyeongrok1/Feature-Evaluator/refs/heads/main/public/data.json');
             const jsonObject = await response.json();
-            const result = await getFeatureSummary(jsonObject, X, Y, Z, targetFeatures, apiKey.trim());            setSummary(result || "No result");
+            const result = await getFeatureSummary(jsonObject, X, Y, Z, targetFeatures, apiKey.trim());
+            setSummary(result || "No result");
             if (scrollRef.current) scrollRef.current.scrollTop = 0;
         } catch (error) { 
             setSummary(`Error: ${error.message}`); 
@@ -37,6 +38,7 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
             
             <div className="d-flex align-items-center justify-content-between border-bottom pb-1" 
                 style={{ 
+                    position: 'relative', 
                     overflow: 'visible', 
                     zIndex: 1010, 
                     height: '22px',         
@@ -44,7 +46,17 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
                     paddingBottom: 0 
                 }}> 
                 
-                <h6 className="fw-bold text-secondary mb-0 px-1" style={{ fontSize: '0.9rem', lineHeight: '1', fontFamily: fontFamily}}>
+                <div style={{ width: '130px' }}></div> 
+
+                <h6 className="fw-bold text-secondary mb-0 px-1" 
+                    style={{ 
+                        fontSize: '0.9rem', 
+                        lineHeight: '1', 
+                        fontFamily: fontFamily,
+                        position: 'absolute', 
+                        left: '50%',
+                        transform: 'translateX(-50%)'
+                    }}>
                     AI Insight
                 </h6>
                 
@@ -95,7 +107,7 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
                 {loading ? (
                     <div className="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
                         <div className="spinner-border spinner-border-sm mb-2 text-primary" style={{ width: '1rem', height: '1rem' }}></div>
-                        <span style={{ fontSize: '11px', fontFamily: '"D2Coding"' }}>Analyzing...</span>
+                        <span style={{ fontSize: '11px', fontFamily: fontFamily }}>Analyzing...</span>
                     </div>
                 ) : (
                     <div className="p-1" style={{ 
@@ -103,7 +115,7 @@ export default function FeatureAbstract({ X, Y, Z, targetFeatures }) {
                         lineHeight: '1.7', 
                         whiteSpace: 'pre-wrap',
                         color: '#333',
-                        fontFamily: 'inherit',
+                        fontFamily: fontFamily, 
                         wordBreak: 'break-word'
                     }}>
                         {summary}

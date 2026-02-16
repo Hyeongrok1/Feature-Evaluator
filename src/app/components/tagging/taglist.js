@@ -9,12 +9,10 @@ export default function Taglist({ X, Y, Z, setX, setY, setZ, tags, setTags, sele
     const [editName, setEditName] = useState('');
 
     const colorPalette = [
-        { class: 'btn-primary', hex: '#0d6efd' },
-        { class: 'btn-success', hex: '#198754' },
-        { class: 'btn-info', hex: '#0dcaf0' },
-        { class: 'btn-warning', hex: '#ffc107' },
-        { class: 'btn-danger', hex: '#dc3545' },
-        { class: 'btn-dark', hex: '#212529' }
+        { class: 'btn-primary', hex: '#0052cc' }, 
+        { class: 'btn-success', hex: '#198754' }, 
+        { class: 'btn-danger', hex: '#bb2d3b' }, 
+        { class: 'btn-dark', hex: '#212529' }     
     ];
 
     const handleDeleteTag = (e, id) => {
